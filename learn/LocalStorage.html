@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <style>
+        body{
+            background-image: url('Form1.png');
+        }
+        form{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 20px;
+            margin: 30px 300px 500px 300px;
+        }
+        fieldset{
+            background-color: wheat;
+        }
+        button{
+            width: 610px;
+            background-color: orange;
+        }
+        #username,#emailid,#phno{
+            width: 600px;
+        }
+        #dtime{
+            width: 296px;
+        }
+        div{
+            color: red;
+            font-size: 25px;
+            display: flex;
+            justify-content: center;
+        }
+    </style>    
+</head>
+<body>
+    <form action="#" onsubmit="booking(event)" name="myform">
+        <fieldset>
+            <div>Book a Call</div><br>
+            <label for="username">Name</label><br>
+            <input type="text" id ="username" name="username" value="" required><br>
+            <label for="emailid">Email:</label><br>
+            <input type="email" id ="emailid" name="emailid" value="" required><br>
+            <label for="phno">Phone:</label><br>
+            <input type="tel" id = "phno" name="phno" value="" required><br>
+            <lable for="dtime">Time for Call:</lable><br>
+            <input type="date" id = "dtime" name="date" value="" required>
+            <input type="time" id = "dtime" name="time" value="" required><br><br>
+            <button>Get a call</button>
+        </fieldset>
+    </form>
+    <script>
+        function booking(event) {
+            event.preventDefault();
+            var name = document.myform.username.value;
+            var email = document.myform.emailid.value;
+            var ph = document.myform.phno.value;
+            var date = document.myform.date.value;
+            var time = document.myform.time.value;
+            console.log(name,email,ph,date,time); 
+
+            localStorage.setItem('Name',name);
+            localStorage.setItem('EmailId',email);
+            localStorage.setItem('Phone',ph);
+            localStorage.setItem('Date',date);
+            localStorage.setItem('Time',time);
+        }
+    </script>
+</body>
+</html>
