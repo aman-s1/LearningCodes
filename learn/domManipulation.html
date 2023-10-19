@@ -30,15 +30,20 @@
    </div>
   </div>
   <script>
-    var listItem2 = document.querySelector('.list-group-item:nth-child(2)');
-    listItem2.style.backgroundColor = 'green';
-    var listItem3 = document.querySelector('.list-group-item:nth-child(3)');
-    listItem3.style.visibility = 'hidden';
-    var list2 = document.querySelectorAll('.list-group-item:nth-child(odd)');
-    for(let i=0;i<list2.length;i++)
-    {
-      list2[i].style.backgroundColor = 'red';
-    }
+    const newhead = document.createElement('h1');
+    newhead.id = 'header-title1';
+    const newheadtext = document.createTextNode('Hello');
+    newhead.append(newheadtext);
+    const head = document.querySelector('header .container');
+    const header1 = document.querySelector('header h1')
+    head.insertBefore(newhead,header1);
+
+    const newlistitem = document.createElement('li');
+    newlistitem.className = 'list-group-item';
+    const newlistitemtext = document.createTextNode('Hello');
+    newlistitem.appendChild(newlistitemtext);
+    const ultag = document.getElementById('items');
+    ultag.insertBefore(newlistitem,ultag.children[0]);
   </script>
 </body>
 </html>
