@@ -81,7 +81,8 @@ deltebtn.addEventListener('click', (e)=> {
   
       //deleting data from row
 
-     axios.delete("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments" + obj._id).then((result)=>
+     axios.delete("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments/" + obj._id)
+     .then((result)=>
      {  
         // console.log(result);
         console.log("data deleted for " + obj.name);
@@ -98,7 +99,7 @@ deltebtn.addEventListener('click', (e)=> {
     
     // var userData;
     
-    axios.get("https://crudcrud.com/api/9b13972b29e84152a7f1e7906984238f/createData/" + obj._id).then((result) => {
+    axios.get("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments/" + obj._id).then((result) => {
                  
             console.log(result);
             dataEdit(result.data)
