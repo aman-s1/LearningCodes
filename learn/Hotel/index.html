@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Ordering App</title>
+</head>
+<body>
+    <div>
+        <form  id="myForm">
+            <div>
+            
+            <h1>Order Now</h1>
+            <label for="price">Order Price:</label>
+            <input type="number" id="price">
+            <label for="dishname">Dish Name:</label>
+            <input type="text" id="dishname">
+            <label for="table">Choose a Table:</label>
+            <select name="table" id="table">
+            <option value="table1">Table1</option>
+            <option value="table2">Table2</option>
+            <option value="table3">Table3</option>
+            </select>
+            <button type="submit" style="display:inline;" id="submitBtn">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <h1>Orders</h1>
+    </div>
+    <div>
+        <h2>Table 1 Orders</h2>
+        <ul id="table1items">
+        </ul>
+    </div>
+    <div>
+        <h2>Table 2 Orders</h2>
+        <ul id="table2items">
+        </ul>
+    </div>
+    <div>
+        <h2>Table 3 Orders</h2>
+        <ul id="table3items">
+        </ul>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
+    <script src="main.js"></script>
+    
+</body>
+</html>

@@ -17,24 +17,31 @@
             <input type="text" id="dishname">
             <label for="table">Choose a Table:</label>
             <select name="table" id="table">
-            <option value="Table1">Table1</option>
-            <option value="Table2">Table2</option>
-            <option value="Table3">Table3</option>
+            <option value="table1">Table1</option>
+            <option value="table2">Table2</option>
+            <option value="table3">Table3</option>
             </select>
             <button type="submit" style="display:inline;" id="submitBtn">Submit</button>
             </div>
         </form>
+    </div>
     <div>
-        <ul id="table1items"> 
-            <li><h3>Table1 Orders:</h3></li>
-        </ul>
-        <ul id="table2items"> 
-            <li><h3>Table2 Orders:</h3></li>
-        </ul>
-        <ul id="table3items"> 
-            <li><h3>Table3 Orders:</h3></li>
+        <h1>Orders</h1>
+    </div>
+    <div>
+        <h2>Table 1 Orders</h2>
+        <ul id="table1items">
         </ul>
     </div>
+    <div>
+        <h2>Table 2 Orders</h2>
+        <ul id="table2items">
+        </ul>
+    </div>
+    <div>
+        <h2>Table 3 Orders</h2>
+        <ul id="table3items">
+        </ul>
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
