@@ -19,7 +19,7 @@ submitBtn.addEventListener('click', function(e) {
     };
 
     // localStorage.setItem(user.email, JSON.stringify(user));
-    axios.post("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments", user).then((result) => {
+    axios.post("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/appointments", user).then((result) => {
         
         toshow(result.data);
     }).catch((err) => {
@@ -38,7 +38,7 @@ submitBtn.addEventListener('click', function(e) {
 
 
 function loadData() {
-        axios.get("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments").then((result) => {
+        axios.get("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/appointments").then((result) => {
             result.data.forEach(element => {
                 toshow(element);        
                 console.log(element);
@@ -81,7 +81,7 @@ deltebtn.addEventListener('click', (e)=> {
   
       //deleting data from row
 
-     axios.delete("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments/" + obj._id)
+     axios.delete("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/appointments/" + obj._id)
      .then((result)=>
      {  
         // console.log(result);
@@ -99,7 +99,7 @@ deltebtn.addEventListener('click', (e)=> {
     
     // var userData;
     
-    axios.get("https://crudcrud.com/api/8a631ef165e74f379417fe03129f6172/appointments/" + obj._id).then((result) => {
+    axios.get("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/appointments/" + obj._id).then((result) => {
                  
             console.log(result);
             dataEdit(result.data)
@@ -141,7 +141,7 @@ deltebtn.addEventListener('click', (e)=> {
         };
 
         
-        axios.put("https://crudcrud.com/api/9b13972b29e84152a7f1e7906984238f/createData/" + obj._id, updatedUser).then((result)=>
+        axios.put("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/createData/" + obj._id, updatedUser).then((result)=>
         {  console.log(result)
             console.log('data updated surccessfully'+ result);
             console.log(result.config.data);

@@ -16,7 +16,7 @@ submitBtn.addEventListener('click', async function (e) {
     };
 
     try {
-        const result = await axios.post("https://crudcrud.com/api/eb5c60ae3c8a40e1bff107c5aa02e7b4/orders", order);
+        const result = await axios.post("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/orders", order);
         toshow(result.data);
     } catch (err) {
         console.log(err);
@@ -29,7 +29,7 @@ submitBtn.addEventListener('click', async function (e) {
 
 async function loadData() {
     try {
-        const result = await axios.get("https://crudcrud.com/api/eb5c60ae3c8a40e1bff107c5aa02e7b4/orders");
+        const result = await axios.get("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/orders");
         result.data.forEach(element => {
             show(element);
             console.log(element);
@@ -54,7 +54,7 @@ function show(obj) {
     delBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
-            await axios.delete("https://crudcrud.com/api/eb5c60ae3c8a40e1bff107c5aa02e7b4/orders/" + obj._id);
+            await axios.delete("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/orders/" + obj._id);
             console.log("data deleted for" + obj.name);
         } catch (err) {
             console.log(err);
@@ -79,7 +79,7 @@ async function toshow(obj) {
     delBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         try {
-            await axios.delete("https://crudcrud.com/api/eb5c60ae3c8a40e1bff107c5aa02e7b4/orders/" + obj._id);
+            await axios.delete("https://crudcrud.com/api/83da0186e478400f98ad512fb7fa503e/orders/" + obj._id);
             console.log("data deleted for" + obj.name);
         } catch (err) {
             console.log(err);

@@ -28,4 +28,26 @@ const printSequence = async() => {
     console.log('e');
 };
 printSequence();
+const student = {
+    name : 'Aman',
+    age : '23',
+    occupation : 'Salaried',
+    greet : function(){
+        console.log("hi, my name is "+ this.name);
+    }
+}
+const print = async() => {
+    await delay(5000);
+    student.greet();
+};
+print();
+const initialAmount = 600000; // 6 lakh rupees
+const futureValue = 200000000; // 10 crore rupees
+const growthRate = 0.3; // 30% per year
 
+const numberOfYears = Math.ceil(
+  Math.log((futureValue * growthRate / initialAmount) + 1) /
+  Math.log(1 + growthRate)
+);
+
+console.log(`It will take approximately ${numberOfYears} years to save 20 crore rupees.`);
