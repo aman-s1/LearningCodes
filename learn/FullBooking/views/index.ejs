@@ -1,0 +1,40 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/style.css">
+  <title>Booking App</title>
+</head>
+
+<body>
+  <h1>Booking App</h1>
+
+  <form action="/add-booking" method="POST">
+    <label for="name">Name:</label>
+    <input type="text" name="name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" name="email" required>
+
+    <label for="phone">Phone:</label>
+    <input type="text" name="phone" required>
+
+    <button type="submit">Add Booking</button>
+  </form>
+
+  <ul>
+    <% bookings.forEach(booking => { %>
+      <li>
+        <%= booking.name %>, <%= booking.email %>, <%= booking.phone %>
+        <a href="/edit-booking/<%= booking.id %>">Edit</a>
+        <a href="/delete-booking/<%= booking.id %>">Delete</a>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+
+</html>
