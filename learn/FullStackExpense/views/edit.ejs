@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Expense Tracker App</title>
+</head>
+
+<body>
+    <h1 class="top-header">Expense Tracker</h1>
+
+    <form action="/update-expense/<%= expense.id %>" method="POST">
+        <label for="expenseamt">Expense Amount</label>
+        <input type="number" id="expenseamt" name="amount" value="<%= expense.amount %>" required><br><br>
+
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" value="<%= expense.description %>" required><br><br>
+
+        <label for="expensetype">Expense Type</label>
+        <select id="expensetype" name="type">
+            <option value="Grocery">Grocery</option>
+            <option value="Transport">Transport</option>
+            <option value="Restaraunts">Restaraunts</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Recharges">Recharges</option>
+            <option value="Bill Pay">Bill Pay</option>
+        </select><br><br>
+        <button type="submit">Update Expense</button>
+    </form>
+</body>
+
+</html>
