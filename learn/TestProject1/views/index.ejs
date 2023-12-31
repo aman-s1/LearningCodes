@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Database App</title>
+</head>
+
+<body>
+    <div class="left-side">
+        <div class="table-list">
+            <h3>List of tables in database</h3>
+            <ul id="displayTable">
+            </ul>
+        </div>
+        <button id="create-table-button" type="submit"><b>Create Table</b></button>
+    </div>
+    <div class="right-side">
+        <div class="form-container">
+            <form id="table-form">
+                <h3>Create Table in Database</h3>
+                <br>
+                <label for="tableName">Table Name:</label>
+                <input type="text" id="tableName" name="tableName" placeholder="Enter table name">
+                <br><br>
+                <div id="table-field">
+                    <label for="fieldName">Field Name:</label>
+                    <input type="text" id="fieldName" class="fieldName" name="fieldName" placeholder="Enter field name">
+                    <label for="fieldType">Type:</label>
+                    <select id="fieldType" name="fieldType">
+                        <option value="STRING">STRING</option>
+                        <option value="INTEGER">INTEGER</option>
+                        <option value="DOUBLE">DOUBLE</option>
+                        <option value="BOOLEAN">BOOLEAN</option>
+                        <option value="DATE">DATE</option>
+                    </select>
+                </div>
+                <br>
+                <div id="additionalfields">
+                </div>
+                <button type="button" id="add-field-btn">Add another Field</button>
+                <br><br>
+                <button type="submit" id="submit-btn">Create</button>
+            </form>
+            <form id="insertDataForm">
+                <label for="dataTableName">Table Name:</label>
+                <input type="text" id="dataTableName" required>
+          
+                <div id="dataFieldContainer">
+                  <!-- <div>
+                    <label for="dataFieldName">Field Name:</label>
+                    <input type="text" class="dataFieldName" required>
+          
+                    <label for="dataFieldValue">Field Value:</label>
+                    <input type="text" class="dataFieldValue" required>
+                  </div> -->
+          
+                </div>
+                <!-- <button type="button" id="moreFields">Give More Fields</button> -->
+                <button type="button" id="addDataBtn">Add Data</button>
+                <!-- <button type="button" id="addFieldsBtn">Add Data</button> -->
+                <button type="submit">Save data</button>
+              </form>
+        </div>
+        <div id="table-data">
+        </div>
+        <div id="drop-table">
+            <input type="text" id="delete-table-name" placeholder="Table to delete">
+            <button type="button" id="drop-table-btn">Drop Table</button>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    const addfieldbtn = document.querySelector('#add-field-btn');
+
+    const createTableForm = document.querySelector('#table-form');
+
+    const addDataBtn = document.querySelector('#addDataBtn');
+
+    const insertDataForm = document.querySelector('#insertDataForm');
+
+    let dataFieldContainer = document.querySelector('#dataFieldContainer');
+
+
+    let fieldCount = 1;
+
+    addfieldbtn.addEventListener('click', () => {
+        const parentElem = document.querySelector('#additionalfields');
+        const fieldContainer = document.createElement('div');
+
+        const fieldNameLabel = document.createElement('label');
+        fieldNameLabel.textContent = ' Field Name: ';
+        fieldNameLabel.setAttribute('for','fieldName');
+
+        const fieldNameInput = document.createElement('input');
+        fieldNameInput.type = 'text';
+        fieldNameInput.name = 'fieldName';
+        fieldNameInput.placeholder = 'Enter field name';
+
+        const fieldTypeLabel = document.createElement('label');
+        fieldTypeLabel.textContent = ' Type: ';
+        fieldTypeLabel.setAttribute('for', 'fieldType');
+
+        const fieldTypeSelect = document.createElement('select');
+        fieldTypeSelect.name = 'fieldType';
+        const types = ['STRING', 'INTEGER', 'DOUBLE', 'BOOLEAN','DATE'];
+        types.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            fieldTypeSelect.appendChild(option);
+        });
+
+        // Append labels and inputs to the container div
+        fieldContainer.appendChild(fieldNameLabel);
+        fieldContainer.appendChild(fieldNameInput);
+        fieldContainer.appendChild(fieldTypeLabel);
+        fieldContainer.appendChild(fieldTypeSelect);
+        fieldContainer.appendChild(document.createElement('br'));
+        fieldContainer.appendChild(document.createElement('br'));
+
+        // Append the container div to the parent element
+        parentElem.appendChild(fieldContainer);
+        fieldCount++;
+    });
+    const createBtn = document.getElementById('create-table-button');
+    createBtn.addEventListener("click", () => {
+        if(document.querySelector('#table-data').style.display === 'block')
+        {
+            document.querySelector('#table-data').style.display = 'none';
+        }
+        document.querySelector('.form-container').style.display = 'block';
+    });
+    createTableForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const allFieldsName = document.querySelectorAll('.fieldName');
+        const allFieldsType = document.querySelectorAll('.fieldType');
+        const tableName = document.querySelector('#tableName').value;
+
+        const fields = [];
+        for(let i=0;i<fieldCount;i++)
+        {
+            const obj = {
+                name : allFieldsName[i].value,
+                type : allFieldsType[i].value,
+            }
+            fields.push(obj);
+        }
+
+        axios.post('http:??localhost:3000/api/createTable', { tableName, fields })
+        .then((result) => {
+            getAllTables();
+            alert(result.data.message);
+        })
+        .catch(err => {
+            console.log(err);
+            alert(err.error);
+        })
+    });
+    addDataBtn.addEventListener('click', () => {
+        let dataFieldsHtml = `<div>
+                                <label for="dataFieldName">Field Name:</label>
+                                <input type="text" class="dataFieldName" required>
+
+                                <label for="dataFieldValue">Field Value:</label>
+                                <input type="text" class="dataFieldValue" required>
+                            </div>`
+        dataFieldContainer.innerHTML += dataFieldsHtml;                         
+    });
+    // insert data into table
+    insertDataForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // const data = {
+        //     [ dataFieldName ]:dataFieldValue
+        // };
+
+        const tableName = document.querySelector('#dataTableName').value;
+        const allFieldsNames = document.querySelectorAll('.dataFieldName');
+        const allFieldsValues = document.querySelectorAll('.dataFieldValue');
+        // console.log(allFieldsNames);
+
+        const fields = [];
+        for(let i=0;i<allFieldsNames.length;i++){
+            fields.push(allFieldsNames[i].value);
+        }
+
+        const values = [];
+        for(let i=0;i<allFieldsValues.length;i++){
+            values.push(allFieldsValues[i].value);
+        }
+        console.log(fields,values);
+
+        axios.post('http://localhost:3000/api/insertData', { tableName: tableName, fields, values })
+        .then(result => {
+            alert(`data inserted successfully`);
+            getAllTableData(tableName);
+        })
+        .catch(err => console.log(err))
+    })
+
+</script>
+</html>

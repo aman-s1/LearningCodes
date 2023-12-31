@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Table App</title>
+</head>
+
+<body>
+  <div style="width:20%; height:100vh; float:left; background-color: azure; border-right: 1px solid blueviolet;">
+    <h2>List of tables in Database</h2>
+    <ul id="displayTable">
+    </ul>
+    <button type="button" style="background-color: orange; height: 30px; width: 230px; position: fixed; bottom: 50px;" id="delete-table-btn">Delete Table</button>
+    <button type="button" style="background-color: orange; height: 30px; width: 230px; position: fixed; bottom: 10px;" id="create-table-btn">Create Table</button>
+  </div>
+  
+  <div style="width:78%;float: right; background-color: antiquewhite;">
+    <form id="createTableForm" style="display: none;">
+      <label for="tableName">Table Name:</label>
+      <input type="text" id="tableName" required><br><br>
+
+      <div id="fieldsContainer">
+        <div>
+          <label for="fieldName">Field Name:</label>
+          <input type="text" class="fieldName" id="fieldName" required>
+
+          <label for="fieldType">Field Type:</label>
+          <select class="fieldType" id="fieldType" required>
+            <option value="INT">INT</option>
+            <option value="VARCHAR(255)">VARCHAR(255)</option>
+            <option value="BOOLEAN">BOOLEAN</option>
+            <option value="DATE">DATE</option>
+          </select>
+        </div>
+      </div>
+      <br>
+      <button type="button" id="addMoreFields" style="background-color: transparent; border: 0px; color: blue; cursor: pointer;">Add More Fields</button><br><br>
+      <button type="submit">Create Table</button>
+    </form>
+
+    <br>
+    <br>
+    <hr>
+
+    <form id="insertDataForm">
+      <label for="dataTableName">Table Name:</label>
+      <input type="text" id="dataTableName" required>
+
+      <div id="dataFieldContainer">
+        <!-- <div>
+          <label for="dataFieldName">Field Name:</label>
+          <input type="text" class="dataFieldName" required>
+
+          <label for="dataFieldValue">Field Value:</label>
+          <input type="text" class="dataFieldValue" required>
+        </div> -->
+
+      </div>
+      <!-- <button type="button" id="moreFields">Give More Fields</button> -->
+      <br>
+      <button type="button" id="addDataBtn">Add Data</button>
+      <!-- <button type="button" id="addFieldsBtn">Add Data</button> -->
+      <button type="submit">Save data</button>
+    </form>
+
+    <div id="tableData">
+    </div>
+    <div id="tableDrop" style="display: none;">
+        <hr>
+        <input type="text" id="deleteTableName" name="deleteTableName" placeholder="Table name to delete" required>
+        <button type="button" id="droptabbtn">Drop Table</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

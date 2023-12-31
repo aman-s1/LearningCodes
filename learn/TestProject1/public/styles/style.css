@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.left-side, .right-side {
+    flex: 1;
+    height: 100vh;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.left-side {
+    flex: 1;
+    background-color: #f0f0f0;
+}
+
+.right-side {
+    flex: 4;
+    background-color: #e0e0e0;
+}
+.table-list {
+    height: 30px;
+    width: 230px;
+    position: fixed;
+    top: 10px; 
+}
+#create-table-button {
+    background-color: orange;
+    height: 30px;
+    width: 230px;
+    position: fixed;
+    bottom: 10px;
+}
+.form-container {
+    display: none;
+    text-align: left;
+    background-color: wheat;
+    border: 3px solid black; /* Add border style */
+    padding: 20px;
+}
+.table-data {
+    display: none;
+    background-color: lightblue;
+}
+#add-field-btn {
+    color: blue;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#submit-btn {
+    background-color: orange;
+    width: 120px;
+}
