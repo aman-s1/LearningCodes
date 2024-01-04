@@ -33,10 +33,10 @@ const createTable = (req, res) => {
 const insertData = (req, res) => {
     const { tableName, fields, values } = req.body;
 
-    // const db_query = `INSERT INTO ${tableName} SET ?`;
-    const insertDataQuery = `INSERT INTO ${tableName} (${fields.join(', ')}) VALUES (?)`;
+    const placeholders = values.map(() => '?').join(', ');
+    const insertDataQuery = `INSERT INTO ${tableName} (${fields.join(', ')}) VALUES (${placeholders})`;
 
-    pool.query(insertDataQuery, [values], (err, result) => {
+    pool.query(insertDataQuery, values, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
             res.status(500).json({ error: 'Error inserting data' });
@@ -47,11 +47,28 @@ const insertData = (req, res) => {
     });
 }
 
-const getTableData = (req,res) => {
+const getTableFields = (req, res) => {
     const tableName = req.params.tableName;
-    const db_query = `SELECT * FROM ${tableName}`;
+    const db_query = `DESCRIBE ${tableName}`;
 
     pool.query(db_query, (err, result) => {
+        if (err) {
+            console.error('Error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        const fieldNames = result.map(field => field.Field);
+        console.log('Field Names:', fieldNames);
+
+        res.json({ fieldNames });
+    });
+};
+
+const getTableData = (req,res) => {
+    const tableName = req.params.tableName;
+    const db_query = `SELECT * FROM ??`;
+    
+    pool.query(db_query, [tableName], (err, result) => {
         if(err){
             console.log('Error: ', err);
             res.status(500).json({ error: 'something broke'});
@@ -113,6 +130,7 @@ module.exports = {
     createTable,
     insertData,
     getTableData,
+    getTableFields,
     getAllTables,
     deleteTableData,
     deleteTable

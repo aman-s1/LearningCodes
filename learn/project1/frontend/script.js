@@ -31,7 +31,6 @@ createTableBtn.addEventListener('click', () => {
 });
 
 let fieldCount = 1;
-// let globalArray = [];
 
 addMoreFields.addEventListener('click', () => {
     const tableName = dataTableName;
@@ -59,9 +58,7 @@ createTableForm.addEventListener('submit', (e) => {
     const allFieldType = document.querySelectorAll('.fieldType');
     const tableName = document.querySelector('#tableName').value;
 
-    // console.log(allFieldType)
     const fields = [];
-    // const namesArray = [];
     //making object from entered fields
     for(let i=0;i<fieldCount;i++){
         const obj = {
@@ -70,10 +67,7 @@ createTableForm.addEventListener('submit', (e) => {
         }
 
         fields.push(obj);
-        // namesArray.push(obj.name);
     }
-    // console.log(fields)
-    // globalArray.push({tableName, namesArray });
 
     axios.post('http://localhost:5000/createTable', { tableName, fields })
     .then((result) => { 
@@ -88,48 +82,62 @@ createTableForm.addEventListener('submit', (e) => {
 })
 
 addDataBtn.addEventListener('click', () => {
-    let dataFieldsHtml = `<div>
-                            <br>
-                            <label for="dataFieldName">Field Name:</label>
-                            <input type="text" class="dataFieldName" required>
+    const tableNameInput = document.querySelector('#dataTableName');
+    const tableName = tableNameInput.value;
 
-                            <label for="dataFieldValue">Field Value:</label>
-                            <input type="text" class="dataFieldValue" required>
-                         </div>`
-    dataFieldContainer.innerHTML += dataFieldsHtml;                         
-})
+    axios.get(`http://localhost:5000/getTableFields/${tableName}`)
+        .then(result => {
+
+            if (result.data.message) {
+                tableData.textContent = result.data.message;
+                return;
+            }
+
+            const { fieldNames } = result.data;
+
+            dataFieldContainer.innerHTML = '';
+            let dataFieldsHtml = `<div>
+                                    <br>
+                                    ${fieldNames.map(ele => `
+                                        <label for="${ele}" class="dataFieldName">${ele}</label>
+                                        <input type="text" id="${ele}" class="dataFieldValue" required>
+                                    `).join('')}
+                                </div>`;
+            dataFieldContainer.innerHTML += dataFieldsHtml;
+        })
+        .catch(err => console.log(err));
+});
+
 
 // insert data into table
 insertDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    // const data = {
-    //     [ dataFieldName ]:dataFieldValue
-    // };
 
     const tableName = document.querySelector('#dataTableName').value;
     const allFieldsNames = document.querySelectorAll('.dataFieldName');
     const allFieldsValues = document.querySelectorAll('.dataFieldValue');
-    // console.log(allFieldsNames);
 
     const fields = [];
-    for(let i=0;i<allFieldsNames.length;i++){
-        fields.push(allFieldsNames[i].value);
+    for (let i = 0; i < allFieldsNames.length; i++) {
+        fields.push(allFieldsNames[i].textContent);
     }
 
     const values = [];
-    for(let i=0;i<allFieldsValues.length;i++){
+    for (let i = 0; i < allFieldsValues.length; i++) {
         values.push(allFieldsValues[i].value);
     }
-    console.log(fields,values);
+
+    console.log(fields, values);
 
     axios.post('http://localhost:5000/insertData', { tableName: tableName, fields, values })
-    .then(result => {
-        alert(`data inserted successfully`);
-        getAllTableData(tableName);
-    })
-    .catch(err => console.log(err))
+        .then(result => {
+            alert(`Data inserted successfully`);
+            getAllTableData(tableName);
+        })
+        .catch(err => console.log(err));
+});
 
-})
+
 
 dropTableBtn.addEventListener('click', (e) => {
     e.preventDefault();

@@ -8,9 +8,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// database
-
-
 app.use('/',route);
 
 app.listen(5000, () => {
