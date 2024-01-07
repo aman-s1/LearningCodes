@@ -36,34 +36,3 @@ async function signUp(e) {
         }
     }
 };
-
-async function forgotPass(e) {
-    try{
-        e.preventDefault();
-        console.log(e.target.email.value);
-
-        const recoverDetails = {
-            email : e.target.email.value
-        }
-        console.log(recoverDetails);
-        
-        const response = await axios.post('http://localhost:3000/user/getPassword', recoverDetails);
-
-        if (response.status === 200) {
-            // Display the password to the user (not recommended)
-            console.log(response.data.password);
-            const passheading = document.querySelector('#pass');
-            if(passheading.innerHTML != '')
-            {
-                passheading.innerHTML = '';
-            }
-            passheading.innerHTML += response.data.password;
-        } else {
-            throw new Error('Failed to retrieve password');
-        }
-    } 
-    catch (err) {
-        // Display an error message to the user
-        console.error(err.message);
-    }
-}

@@ -20,11 +20,11 @@
         font-size: 16px;
         line-height: 1.6;
     }
-    .signUp-container {
+    .login-container {
         border-radius: 8px;
         padding: 90px;
     }
-    .signUp-form {
+    .login-form {
         display: flex;
         flex-direction: column;
         max-width: 300px; /* Adjust as needed */
@@ -66,34 +66,32 @@
         justify-content: space-between;
         margin-bottom: 15px;
     }
-    #user-exists {
+    #inc-cred {
         display: none;
-        padding-top: 15px;
         color: red;
     }
 
 </style>
 
 <body>
-    <div class="signUp-container">
-        <form class="signUp-form" onsubmit="signUp(event)">
-            <h3>Sign Up</h3>
-            <input type="text" id="username" name="username" placeholder="Username" required>
+    <div class="login-container">
+        <form class="login-form" onsubmit="login(event)">
+            <h3>Sign In</h3>
             <input type="text" id="email" name="email" placeholder="Email" required>
             <input type="text" id="password" name="password" placeholder="Password" required>
             <div id="anchor-tags">
-                <a href="./login.html" class="left-anchor">Already User: Sign In</a><!--
-                --><a href="./forgotPass.html" class="right-anchor">Forgot Password</a>
+                <a href="../login/login.html" class="left-anchor">Sign Up</a>
+                <a href="../forgot/forgotPass.html" class="right-anchor">Forgot Password</a>
             </div>
-            <button type="submit">Sign Up</button>
-            <div id="user-exists">
-                <h5>User already exists</h5>
+            <div id="inc-cred">
+                <h5>Incorrect Credentials</h5>
             </div>
+            <button type="submit">Sign In</button>
         </form>
     </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-<script src="./sign.js"></script>
+<script src="./login.js"></script>
 
 </html>

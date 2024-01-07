@@ -20,11 +20,11 @@
         font-size: 16px;
         line-height: 1.6;
     }
-    .forgot-container {
+    .signUp-container {
         border-radius: 8px;
         padding: 90px;
     }
-    .forgot-form {
+    .signUp-form {
         display: flex;
         flex-direction: column;
         max-width: 300px; /* Adjust as needed */
@@ -51,23 +51,49 @@
     h3 {
         color: rgb(0, 189, 252);
     }
+    a {
+        font-size: small;
+        color: rgb(0, 189, 252);
+    }
+    .left-anchor {
+        align-self: flex-start;
+    }
+    .right-anchor {
+        align-self: flex-end;
+    }
+    #anchor-tags {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+    #user-exists {
+        display: none;
+        padding-top: 15px;
+        color: red;
+    }
 
 </style>
 
 <body>
-    <div class="forgot-container">
-        <form class="forgot-form" onsubmit="forgotPass(event)">
-            <h3>Forgot Password</h3>
+    <div class="signUp-container">
+        <form class="signUp-form" onsubmit="signUp(event)">
+            <h3>Sign Up</h3>
+            <input type="text" id="username" name="username" placeholder="Username" required>
             <input type="text" id="email" name="email" placeholder="Email" required>
-            <button type="submit">Recover Password</button>
-            <div id="rec-pass">
-                <h5 id="pass"></h5>
+            <input type="text" id="password" name="password" placeholder="Password" required>
+            <div id="anchor-tags">
+                <a href="../login/login.html" class="left-anchor">Already User: Sign In</a><!--
+                --><a href="../forgot/forgotPass.html" class="right-anchor">Forgot Password</a>
+            </div>
+            <button type="submit">Sign Up</button>
+            <div id="user-exists">
+                <h5>User already exists</h5>
             </div>
         </form>
     </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-<script src="./sign.js"></script>
+<script src="./signUp.js"></script>
 
 </html>

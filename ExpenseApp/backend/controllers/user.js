@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
 function isstringInvalid(string){
@@ -30,6 +31,37 @@ const signup = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Step 1: Validate Input
+        if (!email || !password) {
+            return res.status(400).json({ err: 'Email and password are required' });
+        }
+
+        // Step 2: Check User Existence
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            return res.status(401).json({ err: 'Invalid email or password' });
+        }
+
+        // Step 3: Password Verification (Without bcrypt)
+        if (password !== user.password) {
+            return res.status(401).json({ err: 'Invalid email or password' });
+        }
+
+        // Step 4: Generate and Send Token
+        const secretKey = process.env.JWT_SECRET_KEY || 'default_secret_key';
+        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
+
+        res.status(200).json({ token, message: 'Login successful' });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
 const getPass = async (req, res) => {
     const { email } = req.body;
 
@@ -49,5 +81,6 @@ const getPass = async (req, res) => {
 
 module.exports = {
     signup,
+    login,
     getPass
 };

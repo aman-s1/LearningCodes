@@ -1,0 +1,38 @@
+async function login(e) {
+    try {
+        e.preventDefault();
+        console.log(e.target.email.value, e.target.password.value);
+
+        const loginDetails = {
+            email: e.target.email.value,
+            password: e.target.password.value
+        };
+
+        const response = await axios.post('http://localhost:3000/user/login', loginDetails);
+
+        if (response.status === 200) {
+            console.log(response.data.email, response.data.password); // Note: Passwords should not be logged for security reasons
+            window.location.href = "../index.html";
+            alert(response.data.message);
+        }else {
+            throw new Error('Failed to login');
+        }
+    } catch (err) {
+        if(err.response && err.response.data && err.response.data.err === 'Invalid email or password')
+        {
+            const invCred = document.querySelector('#inc-cred');
+            invCred.style.display = 'block';
+        }
+        else {
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = err.message;
+            errorMessage.style.color = 'red';
+            errorMessage.style.position = 'fixed';
+            errorMessage.style.top = '70%';
+            errorMessage.style.left = '50%';
+            errorMessage.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(errorMessage);
+        }
+        console.error(err.message);
+    }
+}

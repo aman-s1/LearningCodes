@@ -20,11 +20,11 @@
         font-size: 16px;
         line-height: 1.6;
     }
-    .login-container {
+    .forgot-container {
         border-radius: 8px;
         padding: 90px;
     }
-    .login-form {
+    .forgot-form {
         display: flex;
         flex-direction: column;
         max-width: 300px; /* Adjust as needed */
@@ -51,47 +51,23 @@
     h3 {
         color: rgb(0, 189, 252);
     }
-    a {
-        font-size: small;
-        color: rgb(0, 189, 252);
-    }
-    .left-anchor {
-        align-self: flex-start;
-    }
-    .right-anchor {
-        align-self: flex-end;
-    }
-    #anchor-tags {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-    }
-    #incorrect {
-        display: none;
-        color: red;
-    }
 
 </style>
 
 <body>
-    <div class="login-container">
-        <form class="login-form" onsubmit="login(event)">
-            <h3>Sign In</h3>
+    <div class="forgot-container">
+        <form class="forgot-form" onsubmit="forgotPass(event)">
+            <h3>Forgot Password</h3>
             <input type="text" id="email" name="email" placeholder="Email" required>
-            <input type="text" id="password" name="password" placeholder="Password" required>
-            <div id="anchor-tags">
-                <a href="./signUp.html" class="left-anchor">Sign Up</a>
-                <a href="./forgotPass.html" class="right-anchor">Forgot Password</a>
+            <button type="submit">Recover Password</button>
+            <div id="rec-pass">
+                <h5 id="pass"></h5>
             </div>
-            <div id="incorrect">
-                <h5>Incorrect Credentials</h5>
-            </div>
-            <button type="submit">Sign In</button>
         </form>
     </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-<script src="./sign.js"></script>
+<script src="./forgot.js"></script>
 
 </html>
