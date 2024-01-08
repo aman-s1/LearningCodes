@@ -15,7 +15,7 @@ async function login(e) {
 
         if (response.status === 200) {
             console.log(response.data.email, response.data.password); // Note: Passwords should not be logged for security reasons
-            window.location.href = "../index.html";
+            window.location.href = "../expense/index.html";
             alert(response.data.message);
         }else {
             throw new Error('Failed to login');

@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 app.use('/user',userRoutes);
 
-sequelize.sync({force: true})
+sequelize.sync()
     .then(() => {
         app.listen(3000);
     })
