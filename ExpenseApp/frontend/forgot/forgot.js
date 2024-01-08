@@ -28,8 +28,8 @@ async function forgotPass(e) {
             if(passheading.innerHTML != '')
             {
                 passheading.innerHTML = '';
-                passheading.innerHTML += 'User not found with this email address';
             }
+            passheading.innerHTML += 'User not found with this email address';
         }
         else
         {

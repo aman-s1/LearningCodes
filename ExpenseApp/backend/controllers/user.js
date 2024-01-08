@@ -1,5 +1,8 @@
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const User = require('../models/users');
+
 
 function isstringInvalid(string){
     if(string == undefined || string.length === 0)
@@ -24,7 +27,9 @@ const signup = async (req, res) => {
             return res.status(400).json({ err: 'User with this email already exists' });
         }
 
-        await User.create({ name, email, password });
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        await User.create({ name, email, password: hashedPassword });
         res.status(201).json({ message: 'Successfully Created new User' });
     } catch (err) {
         res.status(500).json(err);
@@ -35,28 +40,23 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Step 1: Validate Input
         if (!email || !password) {
             return res.status(400).json({ err: 'Email and password are required' });
         }
 
-        // Step 2: Check User Existence
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            return res.status(401).json({ err: 'Invalid email or password' });
+            return res.status(404).json({ err: 'User does not exist' });
         }
 
-        // Step 3: Password Verification (Without bcrypt)
-        if (password !== user.password) {
-            return res.status(401).json({ err: 'Invalid email or password' });
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
+            return res.status(401).json({ err: 'User not authorized' });
         }
 
-        // Step 4: Generate and Send Token
-        const secretKey = process.env.JWT_SECRET_KEY || 'default_secret_key';
-        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
-
-        res.status(200).json({ token, message: 'Login successful' });
+        res.status(200).json({ success: true, message: 'Login successful' });
     } catch (err) {
         res.status(500).json(err);
     }

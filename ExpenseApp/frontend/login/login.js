@@ -1,3 +1,6 @@
+const invCred = document.querySelector('#inc-cred');
+const noAuth = document.querySelector('#no-auth');
+
 async function login(e) {
     try {
         e.preventDefault();
@@ -18,12 +21,27 @@ async function login(e) {
             throw new Error('Failed to login');
         }
     } catch (err) {
-        if(err.response && err.response.data && err.response.data.err === 'Invalid email or password')
+        if(err.response && err.response.data && err.response.data.err === 'User does not exist')
         {
-            const invCred = document.querySelector('#inc-cred');
+            if(noAuth.style.display == 'block')
+            {
+                noAuth.style.display = 'none';
+            }
             invCred.style.display = 'block';
         }
+        else if(err.response && err.response.data && err.response.data.err === 'User not authorized')
+        {
+            if(invCred.style.display == 'block')
+            {
+                invCred.style.display = 'none';
+            }
+            noAuth.style.display = 'block';
+        }
         else {
+            if(invCred.style.display == 'block')
+            {
+                invCred.style.display = 'none';
+            }
             const errorMessage = document.createElement('div');
             errorMessage.textContent = err.message;
             errorMessage.style.color = 'red';
@@ -35,4 +53,4 @@ async function login(e) {
         }
         console.error(err.message);
     }
-}
+};
