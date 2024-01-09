@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+
 
 const User = require('../models/users');
-
 
 function isstringInvalid(string){
     if(string == undefined || string.length === 0)
@@ -36,6 +37,10 @@ const signup = async (req, res) => {
     }
 };
 
+function generateAccessToken(id, name) {
+    return jwt.sign({ userId: id , name: name}, '6b64e201b0e7ec99dfce661f082aef021e71468d97966944a694ae0101e7319b');
+}
+
 const login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -55,8 +60,8 @@ const login = async (req, res) => {
         if (!match) {
             return res.status(401).json({ err: 'User not authorized' });
         }
-
-        res.status(200).json({ success: true, message: 'Login successful' });
+        
+        res.status(200).json({ message: 'Login successful' , token: generateAccessToken(user.id ,user.name)});
     } catch (err) {
         res.status(500).json(err);
     }

@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/style.css">
     <title>Expense Tracker App</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <style>
     body {
-        background-color: #f0f5f5; /* Light blue background color */
-        font-family: Arial, sans-serif; /* Choose a suitable font */
+        background-color: #f0f5f5;
+        font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
         display: flex;
@@ -20,8 +20,8 @@
     }
 
     .top-header {
-        color: #1565c0; /* Dark blue text color */
-        background-color: #b3e0f2; /* Light blue background color */
+        color: #1565c0;
+        background-color: #b3e0f2;
         padding: 10px;
         margin: 0;
         text-align: center;
@@ -38,7 +38,7 @@
     .expense-form {
         max-width: 400px;
         padding: 20px;
-        background-color: #ffffff; /* White background color */
+        background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
     }
@@ -46,7 +46,7 @@
     label {
         display: block;
         margin-bottom: 8px;
-        color: #1565c0; /* Dark blue text color */
+        color: #1565c0;
     }
 
     input,
@@ -54,38 +54,57 @@
         width: 100%;
         padding: 8px;
         margin-bottom: 16px;
-        border: 1px solid #b3e0f2; /* Light blue border color */
+        border: 1px solid #b3e0f2;
         border-radius: 4px;
         box-sizing: border-box;
     }
 
-    button {
-        background-color: #1565c0; /* Dark blue button color */
-        color: #ffffff; /* White text color */
+    #add-button {
+        background-color: #1565c0;
+        color: #ffffff;
         padding: 10px 15px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
     }
 
-    button:hover {
-        background-color: #003c8f; /* Darker blue on hover */
+    #add-button:hover {
+        background-color: #003c8f;
     }
 
-    .expenses-list {
+    #error-box {
+        color: red;
+    }
+
+    .expenses {
         flex: 1;
-        background-color: #ffffff; /* White background color */
+        background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         padding: 20px;
         margin-left: 20px;
         overflow-y: auto;
     }
-
+    .total-expenses {
+        flex: 0.5;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        margin-left: 20px;
+        overflow-y: auto;
+    }
+    #sumexp {
+        color: #1565c0;
+    }
     ul {
         list-style: none;
         padding: 0;
         margin: 0;
+    }
+    #expensesPieChart {
+        height: fit-content;
+        max-width: 250px;
     }
 </style>
 
@@ -93,16 +112,17 @@
     <h1 class="top-header">Expense Tracker</h1>
 
     <div class="content-container">
-        <form action="/add-expense" class="expense-form" method="POST">
+        <form class="expense-form" onsubmit="addexpense(event)">
             <label for="expenseamt">Expense Amount</label>
             <input type="number" id="expenseamt" name="amount" required>
 
             <label for="description">Description</label>
             <input type="text" id="description" name="description" required>
 
-            <label for="expensetype">Expense Type</label>
-            <select id="expensetype" name="type">
+            <label for="category">Category</label>
+            <select id="category" name="category">
                 <option value="Grocery">Grocery</option>
+                <option value="Fuel">Fuel</option>
                 <option value="Transport">Transport</option>
                 <option value="Restaurants">Restaurants</option>
                 <option value="Shopping">Shopping</option>
@@ -110,16 +130,24 @@
                 <option value="Bill Pay">Bill Pay</option>
             </select>
 
-            <button type="submit">Add Expense</button>
+            <button id="add-button" type="submit">Add Expense</button>
+            <div id="error-box">
+            </div>
         </form>
-
-        <div class="expenses-list">
+        
+        <div class="expenses">
             <h3>Expenses List</h3>
-            <ul id="expenses">
+            <ul id="expenses-list">
                 <!-- Add list items here -->
             </ul>
         </div>
+        <div class="total-expenses">
+            <h3 id="sumexp"></h3>
+            <br>
+            <canvas id="expensesPieChart" width="400" height="400"></canvas>
+        </div>
     </div>
 </body>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="./index.js"></script>
 </html>
