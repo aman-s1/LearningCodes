@@ -31,21 +31,36 @@ const purchasepremium = async (req, res) => {
 const updateTransactionStatus = async (req, res) => {
     try {
         const { payment_id, order_id } = req.body;
+        
+        // Find the order by order_id
         const order = await Order.findOne({ where: { orderid: order_id } });
-        const promise1 = order.update({ ispremium: 'true', paymentid: payment_id, status: 'SUCCESSFUL' });
-        const promise2 = req.user.update({ ispremiumuser: true });
 
-        Promise.all([promise1, promise2]).then(() => {
-            return res.status(202).json({ success: true, message: "Transaction Successful" });
-        }).catch((err) => {
-            throw new Error(err)
-        })
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
 
+        // Find the associated user using the userId from the order
+        const user = await User.findByPk(order.userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update the fields in both Order and User
+        const promises = [
+            order.update({ ispremium: true, paymentid: payment_id, status: 'SUCCESSFUL' }),
+            user.update({ ispremiumuser: 'true' })
+        ];
+
+        await Promise.all(promises);
+
+        return res.status(202).json({ success: true, message: "Transaction Successful" });
     } catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(403).json({ error: err, message: 'Something went wrong' });
     }
 };
+
 
 module.exports = {
     purchasepremium,

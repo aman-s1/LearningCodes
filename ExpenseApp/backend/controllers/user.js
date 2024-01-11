@@ -30,7 +30,7 @@ const signup = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        await User.create({ name, email, password: hashedPassword });
+        await User.create({ name, email, password: hashedPassword, ispremiumuser: 'false'});
         res.status(201).json({ message: 'Successfully Created new User' });
     } catch (err) {
         res.status(500).json(err);

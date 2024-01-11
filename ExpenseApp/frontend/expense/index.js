@@ -53,26 +53,29 @@ function parseJwt (token) {
 
     return JSON.parse(jsonPayload);
 }
-// Client-side code
 
 window.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
-    const decodedtoken = parseJwt(token);
-    console.log(decodedtoken);
+    const decodedToken = parseJwt(token);
+    console.log(decodedToken);
 
-    document.getElementById('user-name').innerHTML = 'Hi ' + decodedtoken.name + ',';
+    document.getElementById('user-name').innerHTML = 'Hi ' + decodedToken.name + ',';
     document.getElementById('user-name').style.color = '#1565c0';
 
     try {
-        const response = await axios.get(`http://localhost:3000/checkpremium/${decodedtoken.userId}`, {
+        const response = await axios.get(`http://localhost:3000/checkpremium/${decodedToken.userId}`, {
             headers: { "Authorization": token }
         });
 
         if (response.status === 200) {
-            showpremusermsg();
-            showLeaderboard();
-        }
+            const { isPremium } = response.data;
 
+            if (isPremium) {
+                showpremusermsg();
+                showLeaderboard(); // Show the leaderboard if the user is premium
+            }
+        }
+        
         const expenseResponse = await axios.get('http://localhost:3000/expense/getexpenses', {
             headers: { "Authorization": token }
         });
@@ -163,11 +166,12 @@ function showLeaderboard() {
         var leaderboardElem = document.getElementById('leaderboard');
         leaderboardElem.innerHTML += '<h3 style="color:#1565c0;"> Leader Board </h3>';
         userLeaderBoardArray.data.forEach((userDetails) => {
-            leaderboardElem.innerHTML += `<li style='color:#1565c0;'>Name - ${userDetails.name},Total Expenses - ${userDetails.total_cost || 0 }</li>`;
+            leaderboardElem.innerHTML += `<li style='color:#1565c0;'>Name - ${userDetails.name},Total Expenses - ${userDetails.totalExpenses }</li>`;
         })
     }
     document.getElementById('message').appendChild(inputElement);
 }
+
 document.getElementById('rzp-button').onclick = async function (e) {
     const token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: { "Authorization": token } });

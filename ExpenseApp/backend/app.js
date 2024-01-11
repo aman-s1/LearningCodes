@@ -6,7 +6,7 @@ const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
-const checkRoutes = require('./routes/checkpremium');
+const checkRoutes = require('./routes/checkstatus');
 const premiumFeatureRoutes = require('./routes/premiumFeature');
 
 const User = require('./models/users');

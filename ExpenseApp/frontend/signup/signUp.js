@@ -7,7 +7,8 @@ async function signUp(e) {
         const signupDetails = {
             name: e.target.username.value,
             email: e.target.email.value,
-            password: e.target.password.value
+            password: e.target.password.value,
+            ispremiumuser: 'false'
         };
 
         const response = await axios.post('http://localhost:3000/user/signup', signupDetails);
