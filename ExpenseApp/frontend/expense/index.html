@@ -58,7 +58,6 @@
         border-radius: 4px;
         box-sizing: border-box;
     }
-
     #add-button {
         background-color: #1565c0;
         color: #ffffff;
@@ -71,13 +70,24 @@
     #add-button:hover {
         background-color: #003c8f;
     }
-
+    #rzp-button {
+        background-color: #1565c0;
+        color: #ffffff;
+        margin-top: 15px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    #rzp-button:hover {
+        background-color: #003c8f;
+    }
     #error-box {
         color: red;
     }
 
     .expenses {
-        flex: 1;
+        flex: 0.6;
         background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
@@ -86,6 +96,15 @@
         overflow-y: auto;
     }
     .total-expenses {
+        flex: 0.4;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        margin-left: 20px;
+        overflow-y: auto;
+    }
+    .leader-box {
         flex: 0.5;
         background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -129,22 +148,29 @@
                 <option value="Recharges">Recharges</option>
                 <option value="Bill Pay">Bill Pay</option>
             </select>
-
             <button id="add-button" type="submit">Add Expense</button>
             <div id="error-box">
             </div>
         </form>
         
         <div class="expenses">
-            <h3>Expenses List</h3>
+            <h3 id="user-name"></h3>
             <ul id="expenses-list">
                 <!-- Add list items here -->
             </ul>
         </div>
         <div class="total-expenses">
+            <button id="rzp-button">Buy Premium</button>
+            <h4 id="prem-head" style="color: #1565c0; align-self: center; display: none;">You are a premium user!</h4>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"/></script>
             <h3 id="sumexp"></h3>
             <br>
             <canvas id="expensesPieChart" width="400" height="400"></canvas>
+        </div>
+        <div class="leader-box">
+            <h3 id="message"></h3>
+            <ul id="leaderboard">
+            </ul>
         </div>
     </div>
 </body>

@@ -17,7 +17,6 @@ async function addexpense(e) {
         const response = await axios.post('http://localhost:3000/expense/addexpense', expenseDetails , { headers: {"Authorization" : token}});
 
         if (response.status === 201) {
-            await updatePieChart();
             addNewExpenseToUI(response.data.expense);
         } else {
             throw new Error('Failed to add Expense');
@@ -41,17 +40,48 @@ async function addexpense(e) {
     }
 };
 
+function showpremusermsg() {
+    document.getElementById('rzp-button').style.display = 'none';
+    document.getElementById('prem-head').style.display = 'block';
+}
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+// Client-side code
+
 window.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
+    const decodedtoken = parseJwt(token);
+    console.log(decodedtoken);
+
+    document.getElementById('user-name').innerHTML = 'Hi ' + decodedtoken.name + ',';
+    document.getElementById('user-name').style.color = '#1565c0';
+
     try {
-        const response = await axios.get('http://localhost:3000/expense/getexpenses', { headers: {"Authorization" : token}});
-        
+        const response = await axios.get(`http://localhost:3000/checkpremium/${decodedtoken.userId}`, {
+            headers: { "Authorization": token }
+        });
+
         if (response.status === 200) {
-            const expenses = response.data.expenses;
+            showpremusermsg();
+            showLeaderboard();
+        }
+
+        const expenseResponse = await axios.get('http://localhost:3000/expense/getexpenses', {
+            headers: { "Authorization": token }
+        });
+
+        if (expenseResponse.status === 200) {
+            const expenses = expenseResponse.data.expenses;
             expenses.forEach(expense => {
                 addNewExpenseToUI(expense);
             });
-            await updatePieChart();
         } else {
             throw new Error('Failed to fetch expenses');
         }
@@ -60,6 +90,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         showError(error);
     }
 });
+
 
 async function addNewExpenseToUI(expense) {
     const parentElement = document.getElementById('expenses-list');
@@ -74,7 +105,6 @@ async function addNewExpenseToUI(expense) {
         </li>`;
     
     await updateTotalExpenseSum();
-    await updatePieChart();
 }
 
 async function deleteExpense(e, expenseid) {
@@ -85,7 +115,6 @@ async function deleteExpense(e, expenseid) {
         if (response.status === 200) {
             removeExpenseFromUI(expenseid);
             await updateTotalExpenseSum();
-            await updatePieChart();
         } else {
             throw new Error('Failed to delete expense');
         }
@@ -118,6 +147,57 @@ function showError(err) {
         errorBox.innerHTML += 'An error occurred.';
     }
 };
+
+function showLeaderboard() {
+    const inputElement = document.createElement('input');
+    inputElement.type = "button";
+    inputElement.style.backgroundColor = "#1565c0";
+    inputElement.style.color = "#ffffff";
+    inputElement.style.cursor = "pointer";
+    inputElement.value = 'Show Leaderboard';
+    inputElement.onclick = async () => {
+        const token = localStorage.getItem('token');
+        const userLeaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard', { headers: { "Authorization": token } });
+        console.log(userLeaderBoardArray);
+
+        var leaderboardElem = document.getElementById('leaderboard');
+        leaderboardElem.innerHTML += '<h3 style="color:#1565c0;"> Leader Board </h3>';
+        userLeaderBoardArray.data.forEach((userDetails) => {
+            leaderboardElem.innerHTML += `<li style='color:#1565c0;'>Name - ${userDetails.name},Total Expenses - ${userDetails.total_cost || 0 }</li>`;
+        })
+    }
+    document.getElementById('message').appendChild(inputElement);
+}
+document.getElementById('rzp-button').onclick = async function (e) {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: { "Authorization": token } });
+    console.log(response);
+    var options =
+    {
+        "key": response.data.key_id,
+        "order_id": response.data.order.id,
+        "handler": async function (response) {
+            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', {
+                order_id: options.order_id,
+                payment_id: response.razorpay_payment_id,
+            }, { headers: { "Authorization": token } })
+
+            alert('You are a Premium User Now');
+            showpremusermsg();
+            showLeaderboard();
+            localStorage.setItem('token',res.data.token);
+        },
+    };
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+    e.preventDefault();
+
+    rzp1.on('payment.failed', function (response){
+        console.log(response);
+        alert('Something went wrong');
+    });
+};
+
 
 async function getTotalExpenseSum() {
     const token = localStorage.getItem('token');

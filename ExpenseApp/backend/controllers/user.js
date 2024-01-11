@@ -61,7 +61,9 @@ const login = async (req, res) => {
             return res.status(401).json({ err: 'User not authorized' });
         }
         
-        res.status(200).json({ message: 'Login successful' , token: generateAccessToken(user.id ,user.name)});
+        const token = generateAccessToken(user.id, user.name);
+        console.log('Token:', token);
+        res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
         res.status(500).json(err);
     }
@@ -87,5 +89,6 @@ const getPass = async (req, res) => {
 module.exports = {
     signup,
     login,
-    getPass
+    getPass,
+    generateAccessToken
 };

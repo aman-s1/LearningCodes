@@ -91,5 +91,5 @@ module.exports = {
     getexpenses,
     deleteexpense,
     getExpenseSum,
-    getExpensesByCategory
+    getExpensesByCategory,
 };
