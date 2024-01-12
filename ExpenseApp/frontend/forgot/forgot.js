@@ -10,14 +10,14 @@ async function forgotPass(e) {
         }
         console.log(recoverDetails);
         
-        const response = await axios.post('http://localhost:3000/user/getPassword', recoverDetails);
-        if (response.status === 200) {
+        const response = await axios.post('http://localhost:3000/password/forgotpassword', recoverDetails);
+        if (response.status === 202) {
             console.log(response.data.password);
             if(passheading.innerHTML != '')
             {
                 passheading.innerHTML = '';
             }
-            passheading.innerHTML += response.data.password;
+            passheading.innerHTML += 'Mail Sent Successfully';
         } else {
             throw new Error('Failed to retrieve password');
         }

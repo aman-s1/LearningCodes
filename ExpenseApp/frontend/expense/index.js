@@ -100,12 +100,12 @@ async function addNewExpenseToUI(expense) {
     const expenseElemId = `expense-${expense.id}`;
 
     parentElement.innerHTML += 
-        `<li id=${expenseElemId}>
-            ${expense.expenseamount} - ${expense.category} - ${expense.description}
-            <button style="padding: 5px 5px; background-color: #1565c0; color: #ffffff; border: none; border-radius: 4px; cursor: pointer;" onclick='deleteExpense(event, ${expense.id})'>
-                Delete Expense
-            </button>
-        </li>`;
+    `<li id=${expenseElemId} style='font-size: small; font-style: italic;'>
+        ${expense.expenseamount} - ${expense.category} - ${expense.description}
+        <button style="padding: 5px 5px; background-color: #1565c0; color: #ffffff; border: none; border-radius: 4px; cursor: pointer;" onclick='deleteExpense(event, ${expense.id})'>
+            Delete Expense
+        </button>
+    </li>`;
     
     await updateTotalExpenseSum();
 }
@@ -166,8 +166,9 @@ function showLeaderboard() {
         var leaderboardElem = document.getElementById('leaderboard');
         leaderboardElem.innerHTML += '<h3 style="color:#1565c0;"> Leader Board </h3>';
         userLeaderBoardArray.data.forEach((userDetails) => {
-            leaderboardElem.innerHTML += `<li style='color:#1565c0;'>Name - ${userDetails.name},Total Expenses - ${userDetails.totalExpenses }</li>`;
-        })
+            leaderboardElem.innerHTML += `<li style='color: #1565c0; font-size: small; font-style: italic;'>Name - ${userDetails.name}, Total Expenses - ${userDetails.totalExpenses}</li>`;
+        });
+        
     }
     document.getElementById('message').appendChild(inputElement);
 }

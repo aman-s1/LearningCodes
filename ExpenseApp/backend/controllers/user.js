@@ -69,26 +69,9 @@ const login = async (req, res) => {
     }
 };
 
-const getPass = async (req, res) => {
-    const { email } = req.body;
-
-    try {
-        // Check if user with the specified email exists
-        const user = await User.findOne({ where: { email } });
-
-        if (!user) {
-            return res.status(404).json({ err: 'User not found with this email address' });
-        }
-
-        res.status(200).json({ password: user.password });
-    } catch (err) {
-        res.status(500).json(err);
-    }
-};
 
 module.exports = {
     signup,
     login,
-    getPass,
     generateAccessToken
 };
