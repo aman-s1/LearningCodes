@@ -36,7 +36,7 @@
     }
 
     .expense-form {
-        flex: 0.4;
+        flex: 0.32;
         max-width: 400px;
         padding: 20px;
         background-color: #ffffff;
@@ -87,8 +87,8 @@
         color: red;
     }
 
-    .expenses {
-        flex: 0.35;
+    #expenses-wrapper {
+        flex: 0.4;
         background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
@@ -97,16 +97,27 @@
         overflow-y: auto;
     }
     .total-expenses {
-        flex: 0.3;
+        flex: 0.32;
         background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         padding: 20px;
         margin-left: 20px;
         overflow-y: auto;
+        text-align: center;
+    }
+    #downloadexpense {
+        background-color: #1565c0;
+        color: #ffffff;
+        margin: 0 auto;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: none;
     }
     .leader-box {
-        flex: 0.3;
+        flex: 0.32;
         background-color: #ffffff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
@@ -125,6 +136,19 @@
     #expensesPieChart {
         height: fit-content;
         max-width: 250px;
+    }
+    #prev-page-btn, #next-page-btn {
+        background-color: #1565c0;
+        color: #ffffff;
+        margin-top: 15px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 25px;
+    }
+    #prev-page-btn:hover, #next-page-btn:hover{
+        background-color: #003c8f;
     }
 </style>
 
@@ -154,7 +178,7 @@
             </div>
         </form>
         
-        <div class="expenses">
+        <div id="expenses-wrapper">
             <h3 id="user-name"></h3>
             <ul id="expenses-list">
                 <!-- Add list items here -->
@@ -162,7 +186,8 @@
         </div>
         <div class="total-expenses">
             <button id="rzp-button">Buy Premium</button>
-            <h4 id="prem-head" style="color: #1565c0; align-self: center; display: none;">You are a premium user!</h4>
+            <button onclick="download()" id="downloadexpense">Download File</button>
+            <h4 id="prem-head" style="font-size:small; color: #1565c0; align-self: center; display: none;">You are a premium user!</h4>
             <script src="https://checkout.razorpay.com/v1/checkout.js"/></script>
             <h3 id="sumexp"></h3>
             <br>
@@ -173,6 +198,9 @@
             <ul id="leaderboard">
             </ul>
         </div>
+    </div>
+    <div id="page-btn">
+        <button id="prev-page-btn">Prev</button><button id="next-page-btn">Next</button>
     </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>

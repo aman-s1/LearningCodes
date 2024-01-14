@@ -1,6 +1,10 @@
-const uuid = require('uuid');
-const sgMail = require('@sendgrid/mail');
+const Sib = require('sib-api-v3-sdk');
+const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
+
+require('dotenv').config();
+
+const logger = require('../logger');
 
 const User = require('../models/users');
 const Forgotpassword = require('../models/forgotpassword');
@@ -11,35 +15,58 @@ const forgotpassword = async (req,res) => {
         const user = await User.findOne({ where: {email}});
         if(user)
         {
-            const id = uuid.v4();
+            const id = uuidv4();
             user.createForgotpassword({ id, active: true })
                 .catch(err => {
                     throw new Error(err)
                 })
-            sgMail.setApiKey(process.env.SENGRID_API_KEY)
+            const client = Sib.ApiClient.instance
+            const apiKey = client.authentications['api-key']
+            apiKey.apiKey = process.env.SB_API_KEY
 
-            const msg = {
-                to: email,
-                from: 'amansuhag6014@gmail.com',
-                subject: 'Sent to reset Password',
-                text: 'Reset Password',
-                html: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
+            const tranEmailApi = new Sib.TransactionalEmailsApi()
+            const sender = {
+                email: 'amansuhag6014@gmail.com',
+                name: 'Aman',
             }
-
-            sgMail
-            .send(msg)
-            .then((response) => {
-                return res.status(response[0].statusCode).json({message: 'Link to reset password sent to your mail', success: true})
-            })
-            .catch((error) => {
-                throw new Error(error);
-            })
+            const receivers = [
+                {
+                    email: 'amansuhag6014@gmail.com',
+                },
+                {
+                    email: email,
+                },
+            ]
+            tranEmailApi
+                .sendTransacEmail({
+                    sender,
+                    to: receivers,
+                    subject: 'Reset Password Link',
+                    textContent: `
+                        Dear User,
+                        This mail is sent to you in regarding the request you made to reset your Password.
+                        `,
+                    htmlContent: `
+                        <h4>Dear User</h4>
+                        <p>This mail is sent to you in regarding the request you made to reset your Password</p>
+                        <a href="http://localhost:3000/password/resetpassword/${id}">click here</a>
+                `,
+                    params: {
+                        role: 'Backend and Full stack',
+                    },
+                })
+                .then(() => {
+                    logger.info('Mail Sent To Reset Password : Success');
+                    return res.status(202).json({ message: 'check your mail' })
+                })
+                .catch(console.log)
         }
         else{
             throw new Error('User doenot exist')
         }
     }catch(err){
         console.log(err)
+        logger.error('Error processing request:', err);
         return res.json({ message: err,success: false});
     }
 }
@@ -93,6 +120,7 @@ const updatepassword = (req, res) => {
                                 throw new Error(err);
                             }
                             user.update({ password: hash }).then(() => {
+                                logger.info('Password Updated : Success');
                                 res.status(201).json({message: 'Successfuly update the new password'})
                             })
                         });
@@ -103,6 +131,7 @@ const updatepassword = (req, res) => {
             })
         })
     } catch(error){
+        logger.error('Error processing request:', error);
         return res.status(403).json({ error, success: false } )
     }
 

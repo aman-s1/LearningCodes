@@ -3,6 +3,9 @@ const expensesList = document.querySelector('#expenses-list');
 const totalExpenses = document.querySelector('.total-expenses');
 const sumExpenses = document.querySelector('#sumexp');
 const expensesPieChart = document.getElementById('expensesPieChart').getContext('2d');
+const downloadFile = document.getElementById('downloadexpense');
+
+const PAGE_SIZE = 7;
 
 async function addexpense(e) {
     try {
@@ -55,13 +58,13 @@ function parseJwt (token) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
+    let currentPage = 1;
     const token = localStorage.getItem('token');
     const decodedToken = parseJwt(token);
     console.log(decodedToken);
 
     document.getElementById('user-name').innerHTML = 'Hi ' + decodedToken.name + ',';
     document.getElementById('user-name').style.color = '#1565c0';
-
     try {
         const response = await axios.get(`http://localhost:3000/checkpremium/${decodedToken.userId}`, {
             headers: { "Authorization": token }
@@ -72,16 +75,49 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             if (isPremium) {
                 showpremusermsg();
+                downloadFile.style.display = 'block';
                 showLeaderboard(); // Show the leaderboard if the user is premium
+            }
+            else{
+                downloadFile.style.display = 'none';
             }
         }
         
-        const expenseResponse = await axios.get('http://localhost:3000/expense/getexpenses', {
+        loadExpenses(currentPage);
+
+        document.getElementById('prev-page-btn').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadExpenses(currentPage);
+            }
+        });
+
+        document.getElementById('next-page-btn').addEventListener('click', () => {
+            const totalPages = 10;
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadExpenses(currentPage);
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        showError(error);
+    }
+});
+
+async function loadExpenses(currentPage = 1) {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await axios.get(`http://localhost:3000/expense/getexpenses?page=${currentPage}&pageSize=${PAGE_SIZE}`, {
             headers: { "Authorization": token }
         });
 
-        if (expenseResponse.status === 200) {
-            const expenses = expenseResponse.data.expenses;
+        if (response.status === 200) {
+            const expenses = response.data.expenses;
+            const expensesWrapper = document.getElementById('expenses-list');
+            expensesWrapper.innerHTML = '';
+
             expenses.forEach(expense => {
                 addNewExpenseToUI(expense);
             });
@@ -89,23 +125,22 @@ window.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Failed to fetch expenses');
         }
     } catch (error) {
-        console.error(error);
         showError(error);
     }
-});
-
+}
 
 async function addNewExpenseToUI(expense) {
     const parentElement = document.getElementById('expenses-list');
     const expenseElemId = `expense-${expense.id}`;
 
     parentElement.innerHTML += 
-    `<li id=${expenseElemId} style='font-size: small; font-style: italic;'>
+    `<li id=${expenseElemId} style='font-style: italic;'>
         ${expense.expenseamount} - ${expense.category} - ${expense.description}
         <button style="padding: 5px 5px; background-color: #1565c0; color: #ffffff; border: none; border-radius: 4px; cursor: pointer;" onclick='deleteExpense(event, ${expense.id})'>
             Delete Expense
         </button>
-    </li>`;
+    </li>
+    <br>`;
     
     await updateTotalExpenseSum();
 }
@@ -150,6 +185,27 @@ function showError(err) {
         errorBox.innerHTML += 'An error occurred.';
     }
 };
+
+async function download() {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await axios.get('http://localhost:3000/expense/download', { headers: { "Authorization": token } });
+
+        if (response.status === 200) {
+            // The backend is essentially sending a download link
+            // which, if we open in the browser, the file would download
+            const a = document.createElement("a");
+            a.href = response.data.fileURL;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message);
+        }
+    } catch (err) {
+        showError(err);
+    }
+}
+
 
 function showLeaderboard() {
     const inputElement = document.createElement('input');

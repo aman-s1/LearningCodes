@@ -2,6 +2,8 @@ const Razorpay = require('razorpay');
 const Order = require('../models/orders');
 const User = require('../models/users');
 
+const logger = require('../logger');
+
 const purchasepremium = async (req, res) => {
     try {
         var rzp = new Razorpay({
@@ -16,6 +18,7 @@ const purchasepremium = async (req, res) => {
                 throw new Error(JSON.stringify(err));
             }
             req.user.createOrder({ orderid: order.id, status: 'PENDING'}).then(() => {
+                logger.info('Payment Completed : Success');
                 return res.status(201).json({ order, key_id: rzp.key_id });
             }).catch(err => {
                 throw new Error(err);
@@ -23,6 +26,7 @@ const purchasepremium = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
+        logger.error('Error processing request:', err);
         res.status(403).json({ message: 'Something went wrong', error: err });
     }
 };
@@ -53,10 +57,11 @@ const updateTransactionStatus = async (req, res) => {
         ];
 
         await Promise.all(promises);
-
+        logger.info('Transaction Status Updated : Success');
         return res.status(202).json({ success: true, message: "Transaction Successful" });
     } catch (err) {
         console.error(err);
+        logger.error('Error processing request:', err);
         res.status(403).json({ error: err, message: 'Something went wrong' });
     }
 };

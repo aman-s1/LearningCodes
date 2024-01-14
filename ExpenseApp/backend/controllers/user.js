@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
+const logger = require('../logger');
 
 const User = require('../models/users');
 
@@ -31,8 +32,10 @@ const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         await User.create({ name, email, password: hashedPassword, ispremiumuser: 'false'});
+        logger.info('Sign Up : Success');
         res.status(201).json({ message: 'Successfully Created new User' });
     } catch (err) {
+        logger.error('Error processing request:', err);
         res.status(500).json(err);
     }
 };
@@ -63,8 +66,10 @@ const login = async (req, res) => {
         
         const token = generateAccessToken(user.id, user.name);
         console.log('Token:', token);
+        logger.info('Login : SuccessS');
         res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
+        logger.error('Error processing request:', err);
         res.status(500).json(err);
     }
 };
