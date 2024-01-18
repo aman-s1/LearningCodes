@@ -14,7 +14,6 @@ async function login(e) {
         const response = await axios.post('http://localhost:3000/user/login', loginDetails);
 
         if (response.status === 200) {
-            console.log(response.data.email, response.data.password); // Note: Passwords should not be logged for security reasons
             localStorage.setItem('token', response.data.token);
             window.location.href = "../expense/index.html";
             alert(response.data.message);
