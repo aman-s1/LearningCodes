@@ -34,7 +34,7 @@ const signup = async (req,res) => {
 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         await User.create({ name, email, phno, password: hashedPassword});
-        return res.status(201).json({ message: 'Successfully Created New User'});
+        return res.status(201).json({ message: 'Successfully Signed Up'});
     } catch(err) {
         console.log(err);
         return res.status(500).json(err);

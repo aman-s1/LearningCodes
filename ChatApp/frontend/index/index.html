@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5c6cb; 
+            color: #333;
+            position: relative; /* Added position relative */
+        }
+
+        .navbar {
+            background-color: #d9534f;
+            text-align: center;
+            font-size: xx-large;
+            font-style: italic;
+            font-weight: bold;
+            color: white;
+            padding: 10px;
+        }
+
+        #messages {
+            height: 85%;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        #messageToSend {
+            position: fixed;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f5c6cb;
+            border-top: 5px solid #d9534f;
+        }
+
+        #messageInput {
+            flex: 0.93;
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        #sendButton {
+            flex: 0.06;
+            background-color: #d9534f;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        #error-box {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">Chat Me</nav>
+
+    <div id="messages">
+        <ul id="msg">
+        </ul>
+    </div>
+
+    <div id="messageToSend">
+        <input type="text" id="messageInput" placeholder="Type your message...">
+        <button id="sendButton" onclick="sendmsg(event)">Send</button>
+    </div>
+    <div id="error-box">
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="./index.js"></script>
+</html>
