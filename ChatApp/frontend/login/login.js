@@ -15,6 +15,7 @@ async function login(e) {
 
         if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
+            localStorage.setItem('hasFunctionExecuted','false');
             window.location.href = "../index/index.html";
             alert(response.data.message);
         }else {

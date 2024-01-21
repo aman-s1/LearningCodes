@@ -2,19 +2,45 @@ const msgList = document.querySelector('#msg');
 const msgBox = document.querySelector('#messageInput');
 const errorBox = document.querySelector('#error-box');
 
+
+async function userJoindMessage() {
+    try {
+        const token = localStorage.getItem('token');
+
+        const msg = {
+            message: 'joined the chat'
+        };
+
+        const response = await axios.post('http://localhost:3000/message/sendmessage', msg, { headers: { "Authorization": token } });
+
+        if (response.status === 201) {
+            addMessageToUI(response.data.msg);
+        } else {
+            throw new Error('Failed To Join Chat');
+        }
+    } catch (err) {
+        console.log(err);
+        showError(err);
+    }
+}
 async function sendmsg(e) {
     try {
         e.preventDefault();
         const msgVal = msgBox.value;
-        console.log('Message value:', msgVal);
         const msg = {
             message: `${msgVal}`
         };
         const token = localStorage.getItem('token');
+        
+        const hasFunctionExecuted = localStorage.getItem('hasFunctionExecuted');
+
+        if (hasFunctionExecuted === 'false') {
+            await userJoindMessage();
+            localStorage.setItem('hasFunctionExecuted', 'true');
+        }
         const response = await axios.post('http://localhost:3000/message/sendmessage', msg, { headers: { "Authorization": token } });
 
         if (response.status === 201) {
-            // Add the message to the UI only after a successful response
             addMessageToUI(response.data.msg);
             msgBox.value = '';
         } else {
@@ -32,25 +58,28 @@ async function sendmsg(e) {
 };
 
 
-window.addEventListener('DOMContentLoaded', async () => {
+function fetchAndDisplayMessages() {
     const token = localStorage.getItem('token');
+    
+    axios.get('http://localhost:3000/message/getmessage', { headers: { "Authorization": token } })
+        .then((response) => {
+            if (response.status === 200) {
+                const messages = response.data.messages;
+                messages.forEach((msg) => {
+                    addMessageToUI(msg);
+                });
+            } else {
+                throw new Error('Failed to get messages');
+            }
+        })
+        .catch((err) => {
+            showError(err);
+        });
+}
 
-    try {
-        const response = await axios.get('http://localhost:3000/message/getmessage', { headers: {"Authorization" : token}});
+fetchAndDisplayMessages();
 
-        if (response.status === 200) {
-            const messages = response.data.messages;
-
-            messages.forEach((msg) => {
-                addMessageToUI(msg);
-            });
-        } else {
-            throw new Error('Failed to get messages');
-        }
-    } catch (err) {
-        showError(err);
-    }
-});
+setInterval(fetchAndDisplayMessages, 1000);
 
 
 function parseJwt (token) {
@@ -70,15 +99,22 @@ async function addMessageToUI(msg) {
     const token = localStorage.getItem('token');
     const decodedToken = parseJwt(token);
     const senderName = msg.user.name == decodedToken.name ? 'You' : msg.user.name;
-
-    parentElement.innerHTML += `
-        <div id=${msgElemId}>
-            <strong>${senderName}:</strong> ${msg.message}
-        </div>
-        <br>`;
+    if (document.getElementById(`msg-${msg.id}`)) {
+        return;
+    }
+    let messageContent = msg.message;
+    if (messageContent === 'joined the chat') {
+        parentElement.innerHTML += `
+            <li id=${msgElemId} style="padding: 5px;">
+                <em>${msg.user.name} joined the chat</em>
+            </li>`;
+    } else {
+        parentElement.innerHTML += `
+            <li id=${msgElemId} style="padding: 5px;">
+                <strong>${senderName}:</strong> ${msg.message}
+            </li>`;
+    }
 }
-
-
 
 
 function showError(err) {
