@@ -9,4 +9,6 @@ router.post('/sendmessage',authenticateMiddleware.authenticate,messageController
 
 router.get('/getmessage',authenticateMiddleware.authenticate,messageController.getMessages);
 
+router.get('/getoldmessage',authenticateMiddleware.authenticate,messageController.getoldMessages);
+
 module.exports = router;

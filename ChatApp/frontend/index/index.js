@@ -1,7 +1,38 @@
 const msgList = document.querySelector('#msg');
+const oldermsgList = document.querySelector('#oldermsg');
 const msgBox = document.querySelector('#messageInput');
 const errorBox = document.querySelector('#error-box');
+const loadOlderChatsBtn = document.getElementById('loadOlderChatsBtn');
 
+const LIMIT = 5;
+
+loadOlderChatsBtn.addEventListener('click', loadOlderChats);
+
+function loadOlderChats() {
+    try {
+        const token = localStorage.getItem('token');
+        let firstmessageid = getFirstMessageId();
+        firstmessageid === null ? 0 : firstmessageid;
+
+        axios.get(`http://localhost:3000/message/getoldmessage?firstmsgid=${firstmessageid}`, { headers: { "Authorization": token } })
+            .then((response) => {
+                if (response.status === 200) {
+                    const serverMessages = response.data.messages;
+                    const parentElement = document.getElementById('oldermsg');
+                    serverMessages.forEach((msg) => {
+                        addMessageToUI(msg,parentElement);
+                    });
+                } else {
+                    throw new Error('Failed to get messages');
+                }
+            })
+            .catch((err) => {
+                showError(err);
+            });
+    } catch (err) {
+        showError(err);
+    }
+}
 
 async function userJoindMessage() {
     try {
@@ -14,7 +45,8 @@ async function userJoindMessage() {
         const response = await axios.post('http://localhost:3000/message/sendmessage', msg, { headers: { "Authorization": token } });
 
         if (response.status === 201) {
-            addMessageToUI(response.data.msg);
+            const parentElement = document.getElementById('msg');
+            addMessageToUI(response.data.msg,parentElement);
         } else {
             throw new Error('Failed To Join Chat');
         }
@@ -41,7 +73,8 @@ async function sendmsg(e) {
         const response = await axios.post('http://localhost:3000/message/sendmessage', msg, { headers: { "Authorization": token } });
 
         if (response.status === 201) {
-            addMessageToUI(response.data.msg);
+            const parentElement = document.getElementById('msg');
+            addMessageToUI(response.data.msg,parentElement);
             msgBox.value = '';
         } else {
             throw new Error('Failed To send Message');
@@ -57,16 +90,33 @@ async function sendmsg(e) {
     }
 };
 
+function getFirstMessageId() {
+    const localMessages = JSON.parse(localStorage.getItem('storedmsg')) || [];
+    return localMessages.length > 0 ? localMessages[0].id : null;
+}
+
+function getLastMessageId() {
+    const localMessages = JSON.parse(localStorage.getItem('storedmsg')) || [];
+    return localMessages.length > 0 ? localMessages[localMessages.length - 1].id : null;
+}
 
 function fetchAndDisplayMessages() {
     const token = localStorage.getItem('token');
-    
-    axios.get('http://localhost:3000/message/getmessage', { headers: { "Authorization": token } })
+    let lastmessageid = getLastMessageId();
+    lastmessageid === null ? -1 : lastmessageid;
+
+    axios.get(`http://localhost:3000/message/getmessage?lastmsgid=${lastmessageid}`, { headers: { "Authorization": token } })
         .then((response) => {
             if (response.status === 200) {
-                const messages = response.data.messages;
-                messages.forEach((msg) => {
-                    addMessageToUI(msg);
+                const serverMessages = response.data.messages;
+
+                // Retrieve locally stored messages
+                const localMessages = JSON.parse(localStorage.getItem('storedmsg')) || [];
+                // Combine messages from the server and local storage
+                const allMessages = [...localMessages, ...serverMessages];
+                const parentElement = document.getElementById('msg');
+                allMessages.forEach((msg) => {
+                    addMessageToUI(msg,parentElement);
                 });
             } else {
                 throw new Error('Failed to get messages');
@@ -79,7 +129,7 @@ function fetchAndDisplayMessages() {
 
 fetchAndDisplayMessages();
 
-setInterval(fetchAndDisplayMessages, 1000);
+setInterval(fetchAndDisplayMessages, 2000);
 
 
 function parseJwt (token) {
@@ -92,9 +142,20 @@ function parseJwt (token) {
     return JSON.parse(jsonPayload);
 };
 
-async function addMessageToUI(msg) {
-    const parentElement = document.getElementById('msg');
+async function addMessageToUI(msg , parentElement) {
+
     const msgElemId = `msg-${msg.id}`;
+
+    let storedmsg = JSON.parse(localStorage.getItem('storedmsg')) || [];
+    
+    // Push the new message to the array
+    storedmsg.push(msg);
+
+    if (storedmsg.length > LIMIT) {
+        storedmsg = storedmsg.slice(storedmsg.length - LIMIT);
+    }
+    // Save the updated array back to localStorage
+    localStorage.setItem('storedmsg', JSON.stringify(storedmsg));
 
     const token = localStorage.getItem('token');
     const decodedToken = parseJwt(token);

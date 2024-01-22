@@ -15,6 +15,7 @@ async function signUp(e) {
 
         if (response.status === 201) {
             alert(response.data.message);
+            localStorage.setItem('hasFunctionExecuted','false');
             window.location.href = "../login/login.html";
         } else {
             throw new Error('Failed to sign up');

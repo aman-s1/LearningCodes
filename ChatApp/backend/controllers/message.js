@@ -1,5 +1,6 @@
 const Message = require('../models/message');
 const User = require('../models/users');
+const Sequelize = require('sequelize');
 const sequelize = require('../util/database');
 
 function isstringInvalid(string){
@@ -30,7 +31,45 @@ const sendmessage = async (req,res) => {
 
 const getMessages = async (req,res) => {
     try {
+        const lastMessageId = req.query.lastmsgid;
+        let whereCondition = {};
+        
+        if (lastMessageId) {
+            whereCondition = {
+                id: {
+                    [Sequelize.Op.gt]: lastMessageId,
+                },
+            };
+        }
         const messages = await Message.findAll({
+            where: whereCondition,
+            include: {
+                model: User,
+                attributes: ['name'],
+            },
+        });
+        
+        return res.status(200).json({ messages });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ err: 'Failed to get Expenses'});
+    }
+}
+
+const getoldMessages = async (req,res) => {
+    try {
+        const firstmessageid = req.query.firstmessageid;
+        let whereCondition = {};
+
+        if (firstmessageid) {
+            whereCondition = {
+                id: {
+                    [Sequelize.Op.lt]: firstmessageid,
+                },
+            };
+        }
+        const messages = await Message.findAll({
+            where: whereCondition,
             include: {
                 model: User,
                 attributes: ['name'],
@@ -46,5 +85,6 @@ const getMessages = async (req,res) => {
 
 module.exports = {
     sendmessage,
-    getMessages
+    getMessages,
+    getoldMessages
 }
